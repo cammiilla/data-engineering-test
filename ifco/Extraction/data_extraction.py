@@ -63,11 +63,26 @@ spark = SparkSession.builder.appName("DataExtraction").getOrCreate()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("DataExtraction")
 
+### Load data ###
 # File path for orders data
 orders_csv_path = "resources/orders.csv"
+try:
+    # Read the orders CSV file using Polars with ';' as the separator
+    orders_raw = pl.read_csv(orders_csv_path, separator=";")
+except Exception as e:
+    logger.error(f"Error reading csv orders.csv. Error: {e}")
+    raise
 
-# Read the orders CSV file using Polars with ';' as the separator
-orders_raw = pl.read_csv(orders_csv_path, separator=";")
+# Path to invoicing data JSON file
+invoice_json_path = "resources/invoicing_data.json"
+try:
+    # Open and load JSON file containing invoicing data
+    with open(invoice_json_path, 'r') as file:
+        content = json.load(file)
+except Exception as e:
+    logger.error(f"Error reading the json file invoicing_data.json. Error: {e}")
+    raise
+##### Extract data from orders #####
 
 # Apply a consistent schema by casting columns to specific data types
 orders_stable_schema = orders_raw.with_columns([
@@ -85,26 +100,6 @@ orders_stable_schema = orders_stable_schema.fill_null("N/A")
 
 # Remove duplicate rows to ensure data uniqueness
 orders_stable_schema = orders_stable_schema.unique()
-
-# Path to invoicing data JSON file
-invoice_json_path = "resources/invoicing_data.json"
-
-# Open and load JSON file containing invoicing data
-with open(invoice_json_path, 'r') as file:
-    content = json.load(file)
-
-# Extract relevant data from nested JSON structure
-invoice_json_content = content['data']['invoices']
-
-# Verify all dictionaries in the list have the same keys
-reference_keys = set(invoice_json_content[0].keys())
-all_have_same_keys = all(set(d.keys()) == reference_keys for d in invoice_json_content)
-
-# Log whether all entries have consistent keys
-if all_have_same_keys:
-    logger.info("All dictionaries have the same keys.")
-else:
-    logger.error("Not all dictionaries have the same keys.")
 
 # Expand contact data in the DataFrame
 orders_expand_columns = orders_stable_schema.with_columns(
@@ -136,3 +131,20 @@ orders_id_per_salesowners = (
 orders_id_per_salesowners = orders_id_per_salesowners.drop("salesowners")
 orders_id_per_salesowners.rename({"names": "salesowners"})
 
+#### Save data ####
+orders.write_parquet("ifco/Load/orders.parquet")
+orders_id_per_salesowners.write_parquet("ifco/Load/orders_id_per_salesowners.parquet")
+
+
+# Extract relevant data from nested JSON structure
+invoice_json_content = content['data']['invoices']
+
+# Verify all dictionaries in the list have the same keys
+reference_keys = set(invoice_json_content[0].keys())
+all_have_same_keys = all(set(d.keys()) == reference_keys for d in invoice_json_content)
+
+# Log whether all entries have consistent keys
+if all_have_same_keys:
+    logger.info("All dictionaries have the same keys.")
+else:
+    logger.error("Not all dictionaries have the same keys.")
