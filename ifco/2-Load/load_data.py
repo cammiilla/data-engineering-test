@@ -92,7 +92,7 @@ def main(credentials_path):
 
     # Drop and create tables in the target schema
     table_operations = [
-        (f"""DROP TABLE IF EXISTS {target_schema}.invoices;""",
+        (f"""DROP TABLE IF EXISTS {target_schema}.invoices CASCADE;""",
          f"""CREATE TABLE {target_schema}.invoices (
             id VARCHAR(255) PRIMARY KEY,
             orderId VARCHAR(255),
@@ -101,7 +101,7 @@ def main(credentials_path):
             vat VARCHAR(255) NOT NULL
         );"""),
         
-        (f"""DROP TABLE IF EXISTS {target_schema}.orders;""",
+        (f"""DROP TABLE IF EXISTS {target_schema}.orders CASCADE;""",
          f"""CREATE TABLE {target_schema}.orders (
             order_id VARCHAR(255),
             date VARCHAR(255),
@@ -114,7 +114,7 @@ def main(credentials_path):
             cp VARCHAR(255)
         );"""),
         
-        (f"""DROP TABLE IF EXISTS {target_schema}.sales_owners;""",
+        (f"""DROP TABLE IF EXISTS {target_schema}.sales_owners CASCADE;""",
          f"""CREATE TABLE {target_schema}.sales_owners (
             order_id VARCHAR(255),
             salesowners VARCHAR(255)
