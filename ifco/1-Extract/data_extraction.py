@@ -104,14 +104,22 @@ def process_orders_data(orders_df):
         logger.error(f"Error processing orders data: {e}")
         raise
 
-# Function to split and expand salesowners data
+# Split and explode salesowners, then add an order index
 def process_salesowners_data(orders_df):
     try:
         salesowners_df = (
-            orders_df.select(["order_id", "salesowners"])
-            .with_columns(pl.col("salesowners").str.split(",").alias("names"))
-            .explode("names")).drop("salesowners")
-        salesowners_df = salesowners_df.rename({"names": "salesowners"})
+            orders_df
+            .with_columns(
+                pl.col("salesowners").str.split(", ").alias("salesowners_list")
+            )
+            .explode("salesowners_list")  # Explode into individual salesowners
+            .with_columns(
+                # Create a sequential index for each salesowner within the same order_id
+                pl.col("salesowners_list").cum_count().over("order_id").alias("salesowners_order")
+            )
+            .rename({"salesowners_list": "salesowner"})  # Rename the exploded column
+        )
+        salesowners_df = salesowners_df.select(["order_id", "salesowner","salesowners_order"])
         logger.info("Salesowners data split and expanded successfully.")
         return salesowners_df
     except Exception as e:
