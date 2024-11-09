@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: bronze
+    tags: ['finance_erp']
+    tables:
+      - name: invoices
+        description: Company invoices
+      - name: sales_owners
+        description: Sales owners per orders 
+      - name: orders
+        description: Orders and details

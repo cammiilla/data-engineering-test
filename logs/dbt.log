@@ -1,0 +1,66 @@
+[0m16:46:20.537367 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7497460b7c20>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x749743fde810>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x749743cb25d0>]}
+
+
+============================== 16:46:20.558323 | 9b2b15d2-b957-4ba2-87bf-8ef771856000 ==============================
+[0m16:46:20.558323 [info ] [MainThread]: Running with dbt=1.8.7
+[0m16:46:20.559161 [debug] [MainThread]: running dbt with arguments {'printer_width': '80', 'indirect_selection': 'eager', 'log_cache_events': 'False', 'write_json': 'True', 'partial_parse': 'True', 'cache_selected_only': 'False', 'profiles_dir': '/home/codespace/.dbt', 'debug': 'False', 'fail_fast': 'False', 'log_path': 'logs', 'version_check': 'True', 'warn_error': 'None', 'use_colors': 'True', 'use_experimental_parser': 'False', 'empty': 'None', 'quiet': 'False', 'no_print': 'None', 'log_format': 'default', 'static_parser': 'True', 'invocation_command': 'dbt init', 'introspect': 'True', 'target_path': 'None', 'warn_error_options': 'WarnErrorOptions(include=[], exclude=[])', 'send_anonymous_usage_stats': 'True'}
+[0m16:46:20.601754 [warn ] [MainThread]: [ConfigFolderDirectory]: Unable to parse logging event dictionary. Failed to parse dir field: expected string or bytes-like object, got 'PosixPath'.. Dictionary: {'dir': PosixPath('/home/codespace/.dbt')}
+[0m16:46:20.602360 [info ] [MainThread]: Creating dbt configuration folder at 
+[0m16:47:38.910449 [error] [MainThread]: Encountered an error:
+
+[0m16:47:38.912408 [error] [MainThread]: Traceback (most recent call last):
+  File "/home/codespace/.cache/pypoetry/virtualenvs/ifco-Gipka2ZM-py3.12/lib/python3.12/site-packages/dbt/cli/requires.py", line 138, in wrapper
+    result, success = func(*args, **kwargs)
+                      ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.cache/pypoetry/virtualenvs/ifco-Gipka2ZM-py3.12/lib/python3.12/site-packages/dbt/cli/requires.py", line 101, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.cache/pypoetry/virtualenvs/ifco-Gipka2ZM-py3.12/lib/python3.12/site-packages/dbt/cli/main.py", line 470, in init
+    results = task.run()
+              ^^^^^^^^^^
+  File "/home/codespace/.cache/pypoetry/virtualenvs/ifco-Gipka2ZM-py3.12/lib/python3.12/site-packages/dbt/task/init.py", line 325, in run
+    project_name = self.get_valid_project_name()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.cache/pypoetry/virtualenvs/ifco-Gipka2ZM-py3.12/lib/python3.12/site-packages/dbt/task/init.py", line 279, in get_valid_project_name
+    name = click.prompt("Enter a name for your project (letters, digits, underscore)")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.cache/pypoetry/virtualenvs/ifco-Gipka2ZM-py3.12/lib/python3.12/site-packages/click/termui.py", line 164, in prompt
+    value = prompt_func(prompt)
+            ^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.cache/pypoetry/virtualenvs/ifco-Gipka2ZM-py3.12/lib/python3.12/site-packages/click/termui.py", line 147, in prompt_func
+    raise Abort() from None
+click.exceptions.Abort
+
+[0m16:47:38.913723 [debug] [MainThread]: Resource report: {"command_name": "init", "command_wall_clock_time": 78.41997, "process_user_time": 1.218444, "process_kernel_time": 0.091582, "process_mem_max_rss": "98288", "process_in_blocks": "80", "process_out_blocks": "888", "command_success": false}
+[0m16:47:38.914656 [debug] [MainThread]: Command `dbt init` failed at 16:47:38.914539 after 78.42 seconds
+[0m16:47:38.915424 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x749743f697f0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7497440af110>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x749743c5e420>]}
+[0m16:47:38.916208 [debug] [MainThread]: Flushing usage events
+[0m16:47:42.467947 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x79676c893c50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x79676c6afc50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x79676dd705c0>]}
+
+
+============================== 16:47:42.470768 | 3f9b5c2b-55d7-45e6-b13c-3e9cb4f2b2d0 ==============================
+[0m16:47:42.470768 [info ] [MainThread]: Running with dbt=1.8.7
+[0m16:47:42.471549 [debug] [MainThread]: running dbt with arguments {'printer_width': '80', 'indirect_selection': 'eager', 'write_json': 'True', 'log_cache_events': 'False', 'partial_parse': 'True', 'cache_selected_only': 'False', 'warn_error': 'None', 'fail_fast': 'False', 'debug': 'False', 'log_path': 'logs', 'version_check': 'True', 'profiles_dir': '/home/codespace/.dbt', 'use_colors': 'True', 'use_experimental_parser': 'False', 'empty': 'None', 'quiet': 'False', 'no_print': 'None', 'warn_error_options': 'WarnErrorOptions(include=[], exclude=[])', 'introspect': 'True', 'static_parser': 'True', 'log_format': 'default', 'target_path': 'None', 'invocation_command': 'dbt init', 'send_anonymous_usage_stats': 'True'}
+[0m16:47:45.620790 [debug] [MainThread]: Starter project path: /home/codespace/.cache/pypoetry/virtualenvs/ifco-Gipka2ZM-py3.12/lib/python3.12/site-packages/dbt/include/starter_project
+[0m16:47:45.624315 [info ] [MainThread]: 
+Your new dbt project "ifco_business_intelligence" was created!
+
+For more information on how to configure the profiles.yml file,
+please consult the dbt documentation here:
+
+  https://docs.getdbt.com/docs/configure-your-profile
+
+One more thing:
+
+Need help? Don't hesitate to reach out to us via GitHub issues or on Slack:
+
+  https://community.getdbt.com/
+
+Happy modeling!
+
+[0m16:47:45.624953 [info ] [MainThread]: Setting up your profile.
+[0m16:54:12.063999 [info ] [MainThread]: Profile ifco_business_intelligence written to /home/codespace/.dbt/profiles.yml using target's profile_template.yml and your supplied values. Run 'dbt debug' to validate the connection.
+[0m16:54:12.065454 [debug] [MainThread]: Resource report: {"command_name": "init", "command_success": true, "command_wall_clock_time": 389.64087, "process_user_time": 1.143274, "process_kernel_time": 0.099936, "process_mem_max_rss": "93152", "process_out_blocks": "80", "process_in_blocks": "0"}
+[0m16:54:12.066186 [debug] [MainThread]: Command `dbt init` succeeded at 16:54:12.066070 after 389.64 seconds
+[0m16:54:12.066660 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x79676d12a300>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x79676c5d0350>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x79676cfbd670>]}
+[0m16:54:12.067150 [debug] [MainThread]: Flushing usage events

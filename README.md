@@ -1,101 +1,276 @@
-<br />
-<br />
 
-<p align="center">
-  <img src=".images/video-call.png" alt="ifco data engineering test challenge" width="80" height="80">
-</p>
+# IFCO ELT Pipeline Project
 
+## Project Overview
 
-<h1 align="center">
-  <b>
-    IFCO Data Engineering Challenge
-  </b>
-</h1>
+This project is an ELT (Extract, Load, Transform) pipeline that processes raw data into a PostgreSQL database, with transformations handled by dbt. The pipeline is structured into three main stages, each located in its own folder:
 
-<br />
+1. **Extract** - Processes raw data and outputs it in parquet format.
+2. **Load** - Loads the parquet data into a PostgreSQL database.
+3. **Transform** - Transforms the data using dbt in Docker.
 
+This README will guide you through setting up dependencies with Poetry, running each stage, and querying the transformed data.
 
-## Problem Statement
+---
 
-You have been assigned the responsibility of assisting IFCO's Data Team in the analysis of some business data. For this purpose, you have been provided with two files:
+## Folder Structure
 
-* [orders.csv](resources/orders.csv) (which contains factual information regarding the orders received)
-* [invoicing_data.json](resources/invoicing_data.json) (which contains invoicing information)
+The project is organized as follows:
 
-Explore the raw data and provide the code (well-commented) to answer the following questions/scenarios. For this exercise, you can only use Python (or PySpark). **Unit testing is essential** for ensuring the reliability and correctness of your code. Please include appropriate unit tests for each task.
+```
+- 1-Extract/
+  - resources/              # Folder containing raw data files
+  - data_extraction.py      # Python script to process raw data and export it to parquet format
 
-### Test 1: Distribution of Crate Type per Company
+- 2-Load/
+  - DataBase/
+    - Dockerfile           # Dockerfile for PostgreSQL setup
+    - docker-compose.yml   # Docker Compose file for PostgreSQL database setup
+  - Data/                  # Folder where parquet files are stored after extraction
+  - load_data.py           # Python script to load parquet data into PostgreSQL database
+  - DataBaseCredentials/   # Folder containing credentials for the PostgreSQL database
 
-Calculate the distribution of crate types per company (number of orders per type). **Ensure to include unit tests** to validate the correctness of your calculations.
+- 3-Transform/
+  - Dockerfile             # Dockerfile to build a dbt image
+  - docker-compose.yml     # Docker Compose file to run dbt transformations
+  - dbt_project/           # dbt project with SQL transformation models
+    - models/
+      - marts/
+        - business_intelligence/ # Final models for business intelligence transformations
+          - mrt_business_intelligence_sch_test_1.sql
+          - mrt_business_intelligence_sch_test_2.sql
+          - mrt_business_intelligence_sch_test_3.sql
+          - mrt_business_intelligence_sch_test_4.sql
+          - mrt_business_intelligence_sch_test_5.sql
 
-### Test 2: DataFrame of Orders with Full Name of the Contact
+- pyproject.toml            # Poetry configuration file for Python dependencies
+```
 
-Provide a DataFrame (`df_1`) containing the following columns:
+---
 
-| Column            | Description                                                                                                                                                                |
-|-------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| order_id          | The `order_id` field must contain the unique identifier of the order.                                                                                                       |
-| contact_full_name | The `contact_full_name` field must contain the full name of the contact. In case this information is not available, the placeholder "John Doe" should be utilized. |
+## Prerequisites
 
-**Include unit tests** to verify that the full names are correctly extracted and the placeholder is used appropriately.
+1. **Docker** - Required for PostgreSQL and dbt setup.
+2. **Python** - Required to run the extraction and load scripts.
+3. **Poetry** - Used for managing Python dependencies.
+4. **dbt** - Transformation is handled within Docker using dbt, which will be set up in the Transform stage.
 
-### Test 3: DataFrame of Orders with Contact Address
+---
 
-Provide a DataFrame (`df_2`) containing the following columns:
+## Step 1: Set Up Python Dependencies with Poetry
 
-| Column          | Description                                                                                                                                                                                                                                                                                    |
-|-----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| order_id        | The `order_id` field must contain the unique identifier of the order.                                                                                                                                                                                                                            |
-| contact_address | The field for `contact_address` should adhere to the following information and format: "city name, postal code". In the event that the city name is not available, the placeholder "Unknown" should be used. Similarly, if the postal code is not known, the placeholder "UNK00" should be used. |
+1. **Install Poetry** (if not already installed). Follow instructions at [Poetry's official website](https://python-poetry.org/docs/#installation).
 
-**Ensure to include unit tests** to validate the address formatting and placeholder logic.
+2. **Install dependencies**:
+   In the root folder (where the `pyproject.toml` file is located), run:
+   ```bash
+   poetry install
+   ```
 
-### Test 4: Calculation of Sales Team Commissions
+3. **Activate the Poetry environment**:
+   ```bash
+   poetry shell
+   ```
 
-The Sales Team requires your assistance in computing the commissions. It is possible for multiple salespersons to be associated with a single order, as they may have participated in different stages of the order. The `salesowners` field comprises a ranked list of the salespeople who have ownership of the order. The first individual on the list represents the primary owner, while the subsequent individuals, if any, are considered co-owners who have contributed to the acquisition process. The calculation of commissions follows a specific procedure:
+   This activates the virtual environment managed by Poetry, allowing you to run the Python scripts with all necessary dependencies.
 
-- Main Owner: 6% of the net invoiced value.
-- Co-owner 1 (second in the list): 2.5% of the net invoiced value.
-- Co-owner 2 (third in the list): 0.95% of the net invoiced value.
-- The rest of the co-owners do not receive anything.
+---
 
-Provide a list of the distinct sales owners and their respective commission earnings. The list should be sorted in order of descending performance, with the sales owners who have generated the highest commissions appearing first.
+## Step 2: Extract Raw Data
 
-**Hint:** Raw amounts are represented in cents. Please provide euro amounts with two decimal places in the results.
+Run the `data_extraction.py` script from the root directory to process the raw data and save it in the `Data/` folder as parquet files:
 
-**Include unit tests** to verify the correctness of the commission calculations and sorting order.
+```bash
+python 1-Extract/data_extraction.py
+```
 
-### Test 5: DataFrame of Companies with Sales Owners
+This script reads data from `1-Extract/raw_data/`, processes it, and writes the output to the `2-Load/Data/` folder in parquet format.
 
-Provide a DataFrame (`df_3`) containing the following columns:
+---
 
-| Column           | Description                                                                                                                                                                                                                                       |
-|------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| company_id       | The `company_id` field must contain the unique identifier of the company.                                                                                                                                                                         |
-| company_name     | The `company_name` field must contain the name of the company.                                                                                                                                                                                    |
-| list_salesowners | The `list_salesowners` field should contain a unique and comma-separated list of salespeople who have participated in at least one order of the company. Please ensure that the list is sorted in ascending alphabetical order of the first name. |
+## Step 3: Set Up and Load PostgreSQL Database
 
-**Hint:** Consider the possibility of duplicate companies stored under multiple IDs in the database. Take this into account while devising a solution to this exercise.
+1. **Build the PostgreSQL Docker image** by running the following command in the root folder:
 
-**Ensure to include unit tests** to validate the uniqueness and sorting of the sales owners list, and the handling of duplicate companies.
+   ```bash
+   docker build -t database 2-Load/DataBase/
+   ```
 
-### Test 6: Data Visualization (you don't need to submit a solution to this test if not explicitly asked for)
+2. **Start the database container** using Docker Compose:
 
-The Sales team wants to understand which sales owners are particularly successful in creating orders in plastic crates. Create a set of appropriate visualizations / reports that help your stakeholders to understand the following aspects better:
+   ```bash
+   docker-compose -f 2-Load/DataBase/docker-compose.yml up -d
+   ```
 
-- What is the distribtion of orders by crate type.
-- Which sales owners need most training to improve selling on plastic crates, based on the last 12 months orders.
-- Understand who are by month the top 5 performers selling plastic crates for a rolling 3 months evaluation window.
+   This command will set up a PostgreSQL database instance, ready for data loading. Confirm the database is running by checking Docker containers or connecting to the container if needed.
 
-You can use Python or Power BI for this test.
+3. Run the `load_data.py` script to load the parquet files into the PostgreSQL database. Be sure to include the path to the credentials file:
 
-## Additional Instructions
+   ```bash
+   python 2-Load/load_data.py --credentials_path 2-Load/DataBaseCredentials/credentials.json
+   ```
 
-1. **Deliverables**: Ensure your code is well-commented and structured. Provide a complete execution environment as a deliverable. This should include:
-   - All the source code and scripts necessary to reproduce the results.
-   - Clear instructions for setting up and running the environment, including any necessary configurations.
-   - A Dockerfile, if applicable, for containerized execution.
-   - A link to a Git repository containing all the above elements and ensure that access is granted to @theUniC, @carlosbuenosvinos and @ahue.
-2. **Evaluation**: Your solution will be evaluated based on accuracy, efficiency, code clarity, the comprehensiveness of your unit tests, and the completeness of the provided execution environment.
+   This script reads the parquet files from the `2-Load/Data/` folder, uses the credentials from the provided JSON file, and loads the data into appropriate tables in the PostgreSQL database.
 
-Good luck!
+---
+
+## Step 4: Transform Data Using dbt
+
+1. **Build the dbt Docker image**:
+
+   ```bash
+   docker build -t dbt 3-Transform/
+   ```
+
+2. **Start the dbt container** to run the transformations:
+
+   ```bash
+   docker-compose -f 3-Transform/docker-compose.yml up -d
+   ```
+
+   This command starts a container that runs the dbt transformations, applying all models in the `3-Transform/dbt_project/` folder to the data loaded in PostgreSQL.
+
+---
+
+## Accessing the PostgreSQL Database in Docker
+
+To interact with the PostgreSQL database running in the Docker container, follow these steps:
+
+### Step 1: List Running Docker Containers
+
+Before accessing the PostgreSQL database, you need to find the **container ID** of the running database container. You can do this by listing all running Docker containers.
+
+Run the following command:
+
+```bash
+docker ps
+```
+
+This will show a list of all active Docker containers, with information such as their container ID, name, and what ports they are exposing. You should see something like this:
+
+```
+CONTAINER ID   IMAGE        COMMAND                  CREATED        STATUS        PORTS                    NAMES
+bf4ed5f23684   database     "docker-entrypoint.s…"   2 hours ago    Up 2 hours    0.0.0.0:5432->5432/tcp   database_container_name
+```
+
+In the output above, the **CONTAINER ID** for the PostgreSQL database container is `bf4ed5f23684`. This is the ID you'll use to access the database from within the container.
+
+### Step 2: Access the PostgreSQL Database
+
+Now that you have the container ID, you can access the PostgreSQL database by running the following command:
+
+```bash
+docker exec -it bf4ed5f23684 psql -U ccardoso -d develop
+```
+
+Here’s a breakdown of the command:
+- `docker exec -it` is used to execute a command inside a running container.
+- `bf4ed5f23684` is the container ID you retrieved from `docker ps`.
+- `psql` is the PostgreSQL command-line tool that allows you to interact with the database.
+- `-U ccardoso` specifies the user (`ccardoso`) to connect as.
+- `-d develop` specifies the database (`develop`) to connect to.
+
+Once you run this command, you'll be connected to the PostgreSQL database inside the container, and you can run SQL queries directly in the terminal.
+
+---
+
+## Accessing the dbt Docker Container
+
+To access the dbt Docker container and run dbt commands directly, follow these steps:
+
+1. **List running Docker containers** to find the container ID for the dbt image:
+   ```bash
+   docker ps
+   ```
+
+2. **Access the container** by running the `docker exec` command with the container ID (replace `64d97945460e` with the actual container ID from the `docker ps` output):
+   ```bash
+   docker exec -it 64d97945460e /bin/bash
+   ```
+
+3. Once inside the container, you can run the following useful `dbt` commands.
+
+---
+
+## Final Models and Solutions
+
+The final models, which contain the solutions for each of the tests, are located in the following directory:
+
+```
+3-Transform/dbt_project/models/marts/business_intelligence/
+```
+
+The models are:
+
+- `mrt_business_intelligence_sch_test_1.sql`
+- `mrt_business_intelligence_sch_test_2.sql`
+- `mrt_business_intelligence_sch_test_3.sql`
+- `mrt_business_intelligence_sch_test_4.sql`
+- `mrt_business_intelligence_sch_test_5.sql`
+
+These models are applied in the **`develop`** database, under the **`gold`** schema. The table names in the database are identical to the model names (e.g., the table for `mrt_business_intelligence_sch_test_1` is named `mrt_business_intelligence_sch_test_1`).
+
+---
+
+## Useful dbt Commands
+
+Once inside the dbt container, you can use various `dbt` commands to build, test, and query models:
+
+### 1. Build the dbt models
+
+To build the dbt models, use the `dbt build` command. This will run the models and tests:
+
+```bash
+dbt build --profiles-dir=profiles
+```
+
+### 2. Test the dbt models
+
+To run tests on the dbt models, use the `dbt test` command:
+
+```bash
+dbt test --profiles-dir=profiles
+```
+
+### 3. View the Results of Specific Models
+
+To view the results of specific models, use the `dbt
+
+ show` command. Here are a few examples:
+
+```bash
+dbt show --select mrt_business_intelligence_sch_test_1 --limit 100 --profiles-dir=profiles
+dbt show --select mrt_business_intelligence_sch_test_2 --limit 100 --profiles-dir=profiles
+dbt show --select mrt_business_intelligence_sch_test_3 --limit 100 --profiles-dir=profiles
+dbt show --select mrt_business_intelligence_sch_test_4 --limit 100 --profiles-dir=profiles
+dbt show --select mrt_business_intelligence_sch_test_5 --limit 100 --profiles-dir=profiles
+```
+
+These commands will return the first 100 rows from each of the respective models.
+
+---
+
+## Accessing Tables Directly from PostgreSQL Database
+
+If you prefer, you can also query the tables directly from the database without using dbt. Here’s how:
+
+1. **Find the container ID** for the running PostgreSQL database container:
+   ```bash
+   docker ps
+   ```
+
+2. **Access the PostgreSQL database** inside the container:
+   ```bash
+   docker exec -it <container_id> psql -U ccardoso -d develop
+   ```
+
+3. **Run SQL queries** to view the tables. For example, to view the results of a specific model:
+   ```sql
+   SELECT * FROM gold.mrt_business_intelligence_sch_test_1;
+   ```
+
+4. **Exit the PostgreSQL terminal** by typing:
+   ```bash
+   \q
+   ```
+

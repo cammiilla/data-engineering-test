@@ -1,0 +1,9 @@
+version: "3.9"
+
+services:
+  dbt:
+    container_name: dbt
+    build: .
+    image: dbt-dummy
+    volumes:
+      - ./:/usr/src/dbt

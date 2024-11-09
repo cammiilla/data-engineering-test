@@ -1,0 +1,9 @@
+{
+    "orders_csv_path": "1-Extract/resources/orders.csv",
+    "invoice_json_path": "1-Extract/resources/invoicing_data.json",
+    "output_paths": {
+        "orders_parquet": "2-Load/Data/orders.parquet",
+        "salesowners_parquet": "2-Load/Data/sales_owners.parquet",
+        "invoice_parquet": "2-Load/Data/invoices.parquet"
+    }
+}
