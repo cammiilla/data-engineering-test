@@ -19,7 +19,7 @@ The project is organized as follows:
 
 ```
 - 1-Extract/
-  - raw_data/              # Folder containing raw data files
+  - resources/              # Folder containing raw data files
   - data_extraction.py      # Python script to process raw data and export it to parquet format
 
 - 2-Load/
