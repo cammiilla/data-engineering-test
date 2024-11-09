@@ -87,7 +87,7 @@ def main(credentials_path):
     conn = connect_to_db(credentials)
 
     # Ensure the target schema exists
-    target_schema = "finance_erp"
+    target_schema = "bronze"
     create_schema_if_not_exists(conn, target_schema)
 
     # Drop and create tables in the target schema
@@ -117,7 +117,8 @@ def main(credentials_path):
         (f"""DROP TABLE IF EXISTS {target_schema}.sales_owners CASCADE;""",
          f"""CREATE TABLE {target_schema}.sales_owners (
             order_id VARCHAR(255),
-            salesowners VARCHAR(255)
+            salesowner VARCHAR(255),
+            salesowners_order INTEGER
         );""")
     ]
     
@@ -128,7 +129,7 @@ def main(credentials_path):
     data_loads = [
         (credentials['invoices_parquet_path'], f'INSERT INTO {target_schema}.invoices (id, orderId, companyId, grossValue, vat) VALUES (%s, %s, %s, %s, %s)', "invoices"),
         (credentials['orders_parquet_path'], f'INSERT INTO {target_schema}.orders (order_id, date, company_id, company_name, crate_type, contact_name, contact_surname, city, cp) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)', "orders"),
-        (credentials['sales_owners_path'], f'INSERT INTO {target_schema}.sales_owners (order_id, salesowners) VALUES (%s, %s)', "sales_owners")
+        (credentials['sales_owners_path'], f'INSERT INTO {target_schema}.sales_owners (order_id, salesowner, salesowners_order) VALUES (%s, %s, %s)', "sales_owners")
     ]
     
     for parquet_path, insert_query, table_name in data_loads:
