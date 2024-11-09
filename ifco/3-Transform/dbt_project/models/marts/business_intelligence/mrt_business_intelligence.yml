@@ -1,0 +1,89 @@
+version: 2
+
+models:
+  - name: mrt_business_intelligence_sch_test_1
+    description: "Calculate the distribution of crate types per company (number of orders per type)."
+    columns:
+      - name: company_name
+        data_type: text
+        description: "The name of the company. Companies with parts of the name such as 'Inc', 'Ltd', 'Co', and 'Unlimited' should have this part separated and grouped with the last word of the name."
+        tests:
+          - unique
+          - not_null
+
+      - name: wood_orders
+        data_type: bigint
+        description: "The number of wood type orders"
+      - name: metal_orders
+        data_type: bigint
+        description: "The number of metal type orders"
+      - name: plastic_orders
+        data_type: bigint
+        description: "The number of plastic type orders"
+
+  - name: mrt_business_intelligence_sch_test_2
+    description: "DataFrame of Orders with Full Name of the Contact."
+    columns:
+      - name: order_id
+        data_type: character varying
+        description: "The unique identifier for the order"
+        tests:
+          - unique
+          - not_null
+      - name: contact_full_name
+        data_type: text
+        description: "The full name of the contact person. If not available, use 'John Doe' as a placeholder."
+        tests:
+          - not_null
+
+
+  - name: mrt_business_intelligence_sch_test_3
+    description: "DataFrame of Orders with Contact Address."
+    columns:
+      - name: order_id
+        data_type: character varying
+        description: "The unique identifier for the order"
+        tests:
+          - unique
+          - not_null
+      - name: contact_address
+        data_type: text
+        description: "The contact address in the format 'city name, postal code'. If city name is missing, use 'Unknown'. If postal code is missing, use 'UNK00'."
+        tests:
+          - not_null
+
+
+  - name: mrt_business_intelligence_sch_test_4
+    description: "Calculation of Sales Team Commissions based on ownership rank."
+    columns:
+      - name: sales_owners
+        data_type: character varying
+        description: "The name of the sales owner"
+        tests:
+          - unique
+          - not_null
+      - name: total_earnings
+        data_type: numeric
+        description: "The total earnings of the sales owner, in cents, to be converted into euros."
+        tests:
+          - not_null
+
+
+  - name: mrt_business_intelligence_sch_test_5
+    description: "DataFrame of Companies with Sales Owners."
+    columns:
+      - name: company_id
+        data_type: text
+        description: "The unique identifier for the company"
+        tests:
+          - unique
+          - not_null
+      - name: company_name
+        data_type: text
+        description: "The name of the company. Companies with parts of the name such as 'Inc', 'Ltd', 'Co', and 'Unlimited' should have this part separated and grouped with the last word of the name."
+        tests:
+          - unique
+          - not_null
+      - name: list_salesowners
+        data_type: text
+        description: "A comma-separated list of salespeople, sorted alphabetically by their first name, who have participated in at least one order of the company."

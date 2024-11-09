@@ -2,7 +2,7 @@ with orders as (
     select 
         *
     from 
-        {{source('finance_erp', 'orders') }}
+        {{source('bronze', 'orders') }}
 )
 select 
     order_id

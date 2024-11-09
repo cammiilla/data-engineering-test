@@ -7,14 +7,8 @@ with orders as (
 difine_unknown_rules as (
     select 
         order_id,
-        case 
-            when city = null then 'Unknown'
-            else city 
-        end as city_name,
-        case 
-            when cp = null then 'UNK00'
-            else cp 
-        end as postal_code   
+        COALESCE(NULLIF(city, ''), 'Unknown') as city_name,
+        COALESCE(NULLIF(cp, ''), 'UNK00') as postal_code   
     from orders
 ),
 contac_contact_address as (

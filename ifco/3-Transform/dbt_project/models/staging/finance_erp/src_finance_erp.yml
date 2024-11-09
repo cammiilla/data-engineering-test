@@ -1,7 +1,7 @@
 version: 2
 
 sources:
-  - name: finance_erp
+  - name: bronze
     tags: ['finance_erp']
     tables:
       - name: invoices

@@ -1,0 +1,104 @@
+version: 2
+
+models:
+  - name: stg_finance_erp_sch_invoices
+    description: ""
+    columns:
+      - name: id
+        data_type: character varying
+        description: ""
+        tests:
+          - unique
+          - not_null
+
+      - name: order_id
+        data_type: character varying
+        description: ""
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_finance_erp_sch_orders')
+              field: order_id
+
+      - name: gross_value
+        data_type: character varying
+        description: ""
+        tests:
+          - not_null
+
+      - name: vat
+        data_type: character varying
+        description: ""
+        tests:
+          - not_null
+
+  - name: stg_finance_erp_sch_orders
+    description: ""
+    columns:
+      - name: order_id
+        data_type: character varying
+        description: ""
+        tests:
+          - unique
+          - not_null
+
+      - name: date
+        data_type: character varying
+        description: ""
+        tests:
+          - not_null
+
+      - name: company_id
+        data_type: character varying
+        description: ""
+        tests:
+          - not_null
+
+      - name: company_name
+        data_type: text
+        description: ""
+        tests:
+          - not_null
+
+      - name: crate_type
+        data_type: character varying
+        description: ""
+        tests:
+          - not_null
+
+      - name: contact_name
+        data_type: character varying
+        description: ""
+
+      - name: contact_surname
+        data_type: character varying
+        description: ""
+
+      - name: city
+        data_type: character varying
+        description: ""
+
+      - name: cp
+        data_type: character varying
+        description: ""
+
+  - name: stg_finance_erp_sch_sales_owners
+    description: ""
+    columns:
+      - name: order_id
+        data_type: character varying
+        description: ""
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_finance_erp_sch_orders')
+              field: order_id
+
+
+      - name: sales_owners
+        data_type: character varying
+        description: ""
+
+      - name: salesowners_order
+        data_type: integer
+        description: ""

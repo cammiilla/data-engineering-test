@@ -18,6 +18,7 @@ seed-paths: ["seeds"]
 macro-paths: ["macros"]
 snapshot-paths: ["snapshots"]
 
+
 clean-targets:         # directories to be removed by `dbt clean`
   - "target"
   - "dbt_packages"
@@ -34,20 +35,17 @@ models:
   dbt_project:
     # Config indicated by + and applies to all files under models/example/
     staging:
-      +database: "bronze"
+      +database: develop
+      +schema: bronze
       +materialized: table
-      finance_erp:
-        +schema: finance_erp
       
     intermediate:
-      +database: "bronze"
+      +database: develop
+      +schema: silver
       +materialized: table
-      sales:
-        +schema: sales
 
     marts:
-      +database: "bronze"
+      +database: develop
+      +schema: gold
       +materialized: table
-      production: 
-        +schema: production
 

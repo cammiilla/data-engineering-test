@@ -2,9 +2,10 @@ with sales_owners as (
     select 
         *
     from 
-        {{source('finance_erp', 'sales_owners') }}
+        {{source('bronze', 'sales_owners') }}
 )
 select distinct
     order_id,
-    salesowners as sales_owners
+    salesowner as sales_owners,
+    salesowners_order
 from sales_owners

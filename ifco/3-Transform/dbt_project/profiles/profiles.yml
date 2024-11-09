@@ -7,6 +7,6 @@ test_profile:
       user: ccardoso
       password: ccardoso
       port: 5432
-      dbname: bronze
+      dbname: develop
       schema: public
       threads: 1

@@ -27,13 +27,15 @@ join_orders_sales_owners as (
 unique_register_by_order_id as (
     select distinct 
         order_id,
+        company_id,
         company_name,
         sales_owners
     from join_orders_sales_owners
 )
 SELECT 
+    company_id,
     company_name,
-    STRING_AGG(DISTINCT sales_owners, ', ' ORDER BY sales_owners) AS sales_owners_list
+    STRING_AGG(DISTINCT sales_owners, ', ' ORDER BY sales_owners) AS list_salesowners
 FROM unique_register_by_order_id
-GROUP BY company_name
+GROUP BY company_id,company_name
 ORDER BY company_name
