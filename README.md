@@ -174,18 +174,6 @@ Once you run this command, you'll be connected to the PostgreSQL database inside
 
 ---
 
-### Step 3: Run SQL Queries
-
-After connecting to the database, you can start running SQL queries. For example, to view all tables in the `develop` database, you can run:
-
-```sql
-\dt
-```
-
-This will display a list of all tables in the connected database.
-
----
-
 ## Accessing the dbt Docker Container
 
 To access the dbt Docker container and run dbt commands directly, follow these steps:
